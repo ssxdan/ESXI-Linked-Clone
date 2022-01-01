@@ -1,0 +1,17 @@
+stages:
+  - linting
+
+linting:
+  stage: linting
+  script:
+    - /usr/bin/python3.7 -m venv venv
+    - source venv/bin/activate
+    - export CRYPTOGRAPHY_DONT_BUILD_RUST=1
+    - pip install --upgrade pip
+    - pip install -r ci_cd/requirements.txt
+    - pip install ansible-lint
+    - export GIT_SSL_NO_VERIFY=1
+    - ansible-lint .
+  only:
+    - merge_requests
+    - main
