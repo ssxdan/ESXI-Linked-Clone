@@ -5,6 +5,8 @@
   vars:
     vmx_file_name: "{{ (vm_file.files | first ).path.split('/')[-1] }}"
   register: 'register_result'
+  changed_when: true
 
 - name: 'Power on machine'
   command: 'vim-cmd vmsvc/power.on {{ register_result.stdout_lines | first }}'
+  changed_when: true

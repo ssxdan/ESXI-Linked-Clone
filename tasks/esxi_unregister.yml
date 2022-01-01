@@ -3,9 +3,11 @@
 - name: 'Get datastore info'
   command: 'vim-cmd vmsvc/get.datastores {{ vm_info.id }}'
   register: 'datastore_info'
+  changed_when: true
 
 - name: 'Unregister VM'
   command: 'vim-cmd vmsvc/unregister {{ vm_info.id }}'
+  changed_when: true
 
 - name: 'Delete VM data'
   file:

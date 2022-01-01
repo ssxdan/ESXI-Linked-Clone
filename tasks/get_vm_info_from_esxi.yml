@@ -3,6 +3,7 @@
 - name: 'Get all VM status'
   command: 'vim-cmd vmsvc/getallvms'
   register: 'all_vms'
+  changed_when: true
 
 - name: 'Search VM info'
   set_fact:
