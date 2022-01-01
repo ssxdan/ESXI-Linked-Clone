@@ -1,0 +1,57 @@
+---
+
+- name: 'Create dest path'
+  file:
+    path: "{{ base_path }}/{{ clone_to }}"
+    state: 'directory'
+
+- name: 'Copy files'
+  copy:
+    src: "{{ item }}"
+    dest: "{{ base_path }}/{{ clone_to }}/"
+    remote_src: true
+  loop:
+    - "{{ vmx_file.path }}"
+    - "{{ base_path }}/{{ clone_from }}/{{ vmx_disk }}.vmdk"
+    - "{{ base_path }}/{{ clone_from }}/{{ vmx_disk }}-sesparse.vmdk"
+  vars:
+    vmx_file: "{{ vm_file.files | first }}"
+    vmx_disk: "{{ vm_file_content['content'] | b64decode | regex_findall(regex_disk) | first }}"
+    regex_disk: '(?:sata|scsi)0:0\.fileName\s=\s\"(\S+[0-9]{6,6})'
+
+- name: 'Delete references by cloned machine, will be auto recreated'
+  lineinfile:
+    path: "{{ base_path }}/{{ clone_to }}/{{ vmx_file_name }}"
+    state: absent
+    regexp: "{{ item }}"
+  vars:
+    vmx_file_name: "{{ (vm_file.files | first ).path.split('/')[-1] }}"
+  loop:
+    - "sched.swap.derivedName.+"
+    - "ethernet0.generatedAddress.+"
+    - "ethernet0.addressType.+"
+    - "uuid.location.+"
+    - "uuid.bios.+"
+
+- name: 'Change VM name and ID'
+  lineinfile:
+    path: "{{ base_path }}/{{ clone_to }}/{{ vmx_file_name }}"
+    line: "{{ item.line }}"
+    regexp: "{{ item.regexp }}"
+  vars:
+    vmx_file_name: "{{ (vm_file.files | first ).path.split('/')[-1] }}"
+  loop:
+    - line: 'machine.id="{{ clone_to }}"'
+      regexp: 'machine.id.+'
+    - line: 'displayName = "{{ clone_to }}"'
+      regexp: 'displayName.+'
+
+- name: 'Change parentFileNameHint on VMDK'
+  lineinfile:
+    path: '{{ base_path }}/{{ clone_to }}/{{ vmx_disk }}'
+    line: '\1{{ base_path }}{{ clone_from }}/\2'
+    regexp: '(parentFileNameHint=\")(.+)'
+    backrefs: yes
+  vars:
+    vmx_disk: "{{ vm_file_content['content'] | b64decode | regex_findall(regex_disk) | first }}"
+    regex_disk: '(?:sata|scsi)0:0\.fileName\s=\s\"(\S+[0-9]{6,6}\.vmdk)'

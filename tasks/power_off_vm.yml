@@ -1,0 +1,9 @@
+---
+
+- name: 'Power Off VM'
+  command: 'vim-cmd vmsvc/power.off {{ vm_info.id }}'
+  register: 'vm_status'
+  failed_when: false
+  until: "vm_status.rc == 1"
+  retries: 5
+  delay: 5

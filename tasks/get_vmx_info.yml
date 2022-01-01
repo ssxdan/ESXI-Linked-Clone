@@ -1,0 +1,14 @@
+---
+
+- name: 'Find VMX file'
+  find:
+    paths: "{{ base_path }}/{{ clone_from }}"
+    patterns: "*.vmx"
+  register: 'vm_file'
+
+- name: 'Get VMX file content'
+  slurp:
+    src: "{{ file.path }}"
+  register: vm_file_content
+  vars:
+    file: "{{ vm_file.files | first }}"

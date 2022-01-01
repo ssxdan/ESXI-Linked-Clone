@@ -1,0 +1,16 @@
+---
+
+- name: 'Get datastore info'
+  command: 'vim-cmd vmsvc/get.datastores {{ vm_info.id }}'
+  register: 'datastore_info'
+
+- name: 'Unregister VM'
+  command: 'vim-cmd vmsvc/unregister {{ vm_info.id }}'
+
+- name: 'Delete VM data'
+  file:
+    path: "{{ path }}/{{ vm_info.path }}"
+    state: 'absent'
+  vars:
+    path: "{{ datastore_info.stdout | regex_search(regex, '\\1') | first }}"
+    regex: 'url\s+(.+)'

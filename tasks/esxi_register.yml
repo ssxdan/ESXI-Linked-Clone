@@ -1,0 +1,10 @@
+---
+
+- name: 'Register VM'
+  command: 'vim-cmd solo/registervm "{{ base_path }}/{{ clone_to }}/{{ vmx_file_name }}"'
+  vars:
+    vmx_file_name: "{{ (vm_file.files | first ).path.split('/')[-1] }}"
+  register: 'register_result'
+
+- name: 'Power on machine'
+  command: 'vim-cmd vmsvc/power.on {{ register_result.stdout_lines | first }}'

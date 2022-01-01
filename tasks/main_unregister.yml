@@ -1,0 +1,10 @@
+---
+
+- name: 'Get info from ESXI'
+  include_tasks: 'get_vm_info_from_esxi.yml'
+
+- name: 'Power off VM'
+  include_tasks: 'power_off_vm.yml'
+
+- name: 'Unregister and delete VM'
+  include_tasks: 'esxi_unregister.yml'
