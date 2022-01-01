@@ -1,0 +1,16 @@
+---
+
+- name: 'Get all VM status'
+  command: 'vim-cmd vmsvc/getallvms'
+  register: 'all_vms'
+
+- name: 'Search VM info'
+  set_fact:
+    vm_info: "{{{
+      'id': data[0],
+      'datastore': data[1],
+      'path': data[2]
+      }}}"
+  vars:
+    data: "{{ all_vms.stdout | regex_search(regex, '\\1', '\\2', '\\3') }}"
+    regex: '(\d+)\s+{{ vm_name }}\s+(\[.+\])\s([^/]+)'

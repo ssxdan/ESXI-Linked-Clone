@@ -1,0 +1,11 @@
+---
+
+- name: 'Check if tarject VM already exists - get info'
+  stat:
+    path: "{{ base_path }}/{{ clone_to }}"
+  register: 'st'
+
+- name: 'Check if tarject VM already exists - check info'
+  fail:
+    msg: 'Tarject directory already exists'
+  when: 'st.stat.exists'
