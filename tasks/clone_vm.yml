@@ -23,7 +23,7 @@
   vars:
     vmx_file: "{{ vm_file.files | first }}"
     vmx_disk: "{{ vm_file_content['content'] | b64decode | regex_findall(regex_disk) | first }}"
-    regex_disk: '(?:sata|scsi)0:0\.fileName\s=\s\"(\S+[0-9]{6,6})'
+    regex_disk: '(?:sata|scsi)0:0\.fileName\s=\s\"([\S\s][^\.]+[0-9]{6,6})'
 
 - name: 'Delete references by cloned machine, will be auto recreated'
   lineinfile:
@@ -60,4 +60,4 @@
     backrefs: yes
   vars:
     vmx_disk: "{{ vm_file_content['content'] | b64decode | regex_findall(regex_disk) | first }}"
-    regex_disk: '(?:sata|scsi)0:0\.fileName\s=\s\"(\S+[0-9]{6,6}\.vmdk)'
+    regex_disk: '(?:sata|scsi)0:0\.fileName\s=\s\"([\S\s][^\.]+[0-9]{6,6}\.vmdk)'
