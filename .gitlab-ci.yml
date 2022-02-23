@@ -4,7 +4,7 @@ stages:
 linting:
   stage: linting
   script:
-    - /usr/bin/python3.7 -m venv venv
+    - /usr/bin/python3.9 -m venv venv
     - source venv/bin/activate
     - export CRYPTOGRAPHY_DONT_BUILD_RUST=1
     - pip install --upgrade pip

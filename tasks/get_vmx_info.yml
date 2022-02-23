@@ -1,8 +1,11 @@
 ---
 
+- name: 'Get info about cloned VM'
+  include_tasks: 'get_vm_info_from_esxi.yml'
+
 - name: 'Find VMX file'
   find:
-    paths: "{{ base_path }}/{{ clone_from }}"
+    paths: "{{ vm_info.datastore_path }}/{{ vm_name }}"
     patterns: "*.vmx"
   register: 'vm_file'
 

@@ -15,10 +15,8 @@ Role Variables
 
 | Variable | Use |
 | ---| --- |
-|base_path| Path on ESXI to clone and store VMs|
-|clone_from| VM name (in path) of VM to clone|
+|vm_name| Nane (in ESXI) of vm to clone/delete|
 |clone_to| Name of new VM |
-|vm_name| Nane (in ESXI) of vm to delete|
 
 Dependencies
 ------------
@@ -39,8 +37,7 @@ Example Playbook
         name: 'esxi-linked-clone'
         tasks_from: 'main_linked_clone_vm.yml'
       vars:
-        base_path: '/vmfs/volumes/WD_RED/'
-        clone_from: 'Master_Debian'
+        vm_name: 'Master_Debian'
         clone_to: 'Debian test'
 
     - name: 'Delete VM'
