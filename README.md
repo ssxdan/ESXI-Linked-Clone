@@ -1,4 +1,4 @@
-Role Name
+ESXI Linked Clone
 =========
 
 Create and delete a linked clone VM on ESXI over ssh connection
@@ -7,7 +7,7 @@ Based on bash script (https://github.com/pddenhar/esxi-linked-clone)
 
 Requirements
 ------------
-
+The machine to be cloned must have a snapshot and be turned off.\
 Connection ver SSH to ESXI host
 
 Role Variables
