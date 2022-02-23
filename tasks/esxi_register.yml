@@ -1,7 +1,7 @@
 ---
 
 - name: 'Register VM'
-  command: 'vim-cmd solo/registervm "{{ base_path }}/{{ clone_to }}/{{ vmx_file_name }}"'
+  command: 'vim-cmd solo/registervm "{{ vm_info.datastore_path }}/{{ clone_to }}/{{ vmx_file_name }}"'
   vars:
     vmx_file_name: "{{ (vm_file.files | first ).path.split('/')[-1] }}"
   register: 'register_result'

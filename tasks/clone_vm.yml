@@ -2,7 +2,7 @@
 
 - name: 'Create dest path'
   file:
-    path: "{{ base_path }}/{{ clone_to }}"
+    path: "{{ vm_info.datastore_path }}/{{ clone_to }}"
     state: 'directory'
     owner: 'root'
     group: 'root'
@@ -11,15 +11,15 @@
 - name: 'Copy files'
   copy:
     src: "{{ item }}"
-    dest: "{{ base_path }}/{{ clone_to }}/"
+    dest: "{{ vm_info.datastore_path }}/{{ clone_to }}/"
     remote_src: true
     owner: 'root'
     group: 'root'
     mode: '0600'
   loop:
     - "{{ vmx_file.path }}"
-    - "{{ base_path }}/{{ clone_from }}/{{ vmx_disk }}.vmdk"
-    - "{{ base_path }}/{{ clone_from }}/{{ vmx_disk }}-sesparse.vmdk"
+    - "{{ vm_info.datastore_path }}/{{ vm_name }}/{{ vmx_disk }}.vmdk"
+    - "{{ vm_info.datastore_path }}/{{ vm_name }}/{{ vmx_disk }}-sesparse.vmdk"
   vars:
     vmx_file: "{{ vm_file.files | first }}"
     vmx_disk: "{{ vm_file_content['content'] | b64decode | regex_findall(regex_disk) | first }}"
@@ -27,7 +27,7 @@
 
 - name: 'Delete references by cloned machine, will be auto recreated'
   lineinfile:
-    path: "{{ base_path }}/{{ clone_to }}/{{ vmx_file_name }}"
+    path: "{{ vm_info.datastore_path }}/{{ clone_to }}/{{ vmx_file_name }}"
     state: absent
     regexp: "{{ item }}"
   vars:
@@ -41,7 +41,7 @@
 
 - name: 'Change VM name and ID'
   lineinfile:
-    path: "{{ base_path }}/{{ clone_to }}/{{ vmx_file_name }}"
+    path: "{{ vm_info.datastore_path }}/{{ clone_to }}/{{ vmx_file_name }}"
     line: "{{ item.line }}"
     regexp: "{{ item.regexp }}"
   vars:
@@ -54,8 +54,8 @@
 
 - name: 'Change parentFileNameHint on VMDK'
   lineinfile:
-    path: '{{ base_path }}/{{ clone_to }}/{{ vmx_disk }}'
-    line: '\1{{ base_path }}{{ clone_from }}/\2'
+    path: '{{ vm_info.datastore_path }}/{{ clone_to }}/{{ vmx_disk }}'
+    line: '\1{{ vm_info.datastore_path }}/{{ vm_name }}/\2'
     regexp: '(parentFileNameHint=\")(.+)'
     backrefs: yes
   vars:

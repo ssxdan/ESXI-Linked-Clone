@@ -1,12 +1,12 @@
 ---
 
-- name: 'Check prerequisites'
-  include_tasks: 'prerequisites_clone.yml'
-
 - name: 'Get info about cloned VM'
   include_tasks: 'get_vmx_info.yml'
 
-- name: 'Create cloned VM'
+- name: 'Check prerequisites'
+  include_tasks: 'prerequisites_clone.yml'
+
+- name: 'Clone VM'
   include_tasks: 'clone_vm.yml'
 
 - name: 'Register and start VM on ESXI'
